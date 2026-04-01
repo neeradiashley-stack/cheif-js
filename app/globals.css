@@ -1382,6 +1382,18 @@ body::after {
   padding: 40px 32px;
   box-shadow: var(--shadow-md);
 }
+.auth-logo {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 36px;
+  color: var(--charcoal);
+  margin-bottom: 32px;
+  letter-spacing: -0.5px;
+}
+.auth-logo em {
+  color: var(--ember);
+  font-style: italic;
+}
 .auth-header {
   text-align: center;
   margin-bottom: 28px;

@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase-client';
-import Navbar from '@/components/Navbar';
 
 type UserRole = 'worker' | 'restaurant';
 
@@ -58,33 +57,30 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <>
-        <Navbar />
-        <div className="auth-page">
-          <div className="auth-card">
-            <div className="auth-header">
-              <div className="success-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-              </div>
-              <h1>Check Your Email</h1>
-              <p>We sent a confirmation link to <strong>{email}</strong>. Click the link to activate your account.</p>
+      <div className="auth-page">
+        <div className="auth-card">
+          <div className="auth-logo">Staff<em>Bazaar</em></div>
+          <div className="auth-header">
+            <div className="success-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
-            <a href="/login" className="btn-auth" style={{ textDecoration: 'none', textAlign: 'center' }}>
-              Go to Login
-            </a>
+            <h1>Check Your Email</h1>
+            <p>We sent a confirmation link to <strong>{email}</strong>. Click the link to activate your account.</p>
           </div>
+          <a href="/login" className="btn-auth" style={{ textDecoration: 'none', textAlign: 'center' }}>
+            Go to Login
+          </a>
         </div>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
-      <Navbar />
-      <div className="auth-page">
-        <div className="auth-card">
-          <div className="auth-header">
-            <h1>Create Account</h1>
+    <div className="auth-page">
+      <div className="auth-card">
+        <div className="auth-logo">Staff<em>Bazaar</em></div>
+        <div className="auth-header">
+          <h1>Create Account</h1>
             <p>Join StaffBazaar as a worker or restaurant owner</p>
           </div>
 
@@ -167,6 +163,6 @@ export default function SignupPage() {
           </div>
         </div>
       </div>
-    </>
   );
 }
+
