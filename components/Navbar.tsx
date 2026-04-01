@@ -56,8 +56,8 @@ export default function Navbar() {
         </div>
 
         <div className="nav-right">
-          <a href="#" className="btn-nav btn-nav-outline">Log In</a>
-          <a href="/create-profile" className="btn-nav btn-nav-primary">Sign Up Free</a>
+          <a href="/login" className="btn-nav btn-nav-outline">Log In</a>
+          <a href="/signup" className="btn-nav btn-nav-primary">Sign Up Free</a>
         </div>
 
         <button className="mobile-toggle">
