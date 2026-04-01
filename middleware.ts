@@ -28,10 +28,20 @@ export async function middleware(request: NextRequest) {
   // Refresh session if expired
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Protect dashboard routes — redirect to login if not authenticated
-  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
+  const path = request.nextUrl.pathname;
+  const isAuthPage = path === '/login' || path === '/signup';
+
+  // Not logged in — redirect to login (except auth pages themselves)
+  if (!user && !isAuthPage && !path.startsWith('/auth')) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
+    return NextResponse.redirect(url);
+  }
+
+  // Logged in — don't let them see login/signup, send to home
+  if (user && isAuthPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/';
     return NextResponse.redirect(url);
   }
 
