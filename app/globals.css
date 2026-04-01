@@ -1462,5 +1462,40 @@ body::after {
 }
 .auth-footer a { color: var(--ember); font-weight: 600; text-decoration: none; }
 .auth-footer a:hover { text-decoration: underline; }
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--sand);
+}
+.auth-divider span {
+  font-size: 13px;
+  color: var(--stone);
+  font-weight: 500;
+}
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  background: white;
+  color: var(--charcoal);
+  border: 1.5px solid var(--sand);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-google:hover { border-color: var(--charcoal-light); background: var(--cream); }
 .dashboard-actions { margin-bottom: 12px; }
 @media (max-width: 640px) { .auth-role-select { grid-template-columns: 1fr; } .auth-card { padding: 28px 20px; } }
