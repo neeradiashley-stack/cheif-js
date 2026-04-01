@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { createClient } from '@/lib/supabase-client';
 import Navbar from '@/components/Navbar';
 
 // ---------------------------------------------------------------------------
@@ -181,12 +182,19 @@ export default function CreateProfilePage() {
   const [step, setStep] = useState(1);
   const [lang, setLang] = useState('en');
   const [role, setRole] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [city, setCity] = useState('');
+  const [experience, setExperience] = useState('');
   const [selectedLangs, setSelectedLangs] = useState<string[]>([]);
   const [cuisines, setCuisines] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [salary, setSalary] = useState(25000);
   const [photo, setPhoto] = useState<string | null>(null);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [expEntries, setExpEntries] = useState([{ title: '', workplace: '', from: '', to: '' }]);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const totalSteps = 8;
 
@@ -203,6 +211,7 @@ export default function CreateProfilePage() {
   function handlePhoto(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    setPhotoFile(file);
     const reader = new FileReader();
     reader.onload = ev => setPhoto(ev.target?.result as string);
     reader.readAsDataURL(file);
@@ -220,6 +229,87 @@ export default function CreateProfilePage() {
     setExpEntries(entries =>
       entries.map((entry, i) => (i === index ? { ...entry, [field]: value } : entry))
     );
+  }
+
+  async function submitProfile() {
+    setSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        setSubmitError('You must be logged in to create a profile.');
+        setSubmitting(false);
+        return;
+      }
+
+      // Upload photo if provided
+      let photoUrl: string | null = null;
+      if (photoFile) {
+        const ext = photoFile.name.split('.').pop();
+        const path = `${user.id}/avatar.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(path, photoFile, { upsert: true });
+
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(path);
+          photoUrl = urlData.publicUrl;
+        }
+      }
+
+      // Upsert profile
+      const { error: profileError } = await supabase.from('profiles').upsert({
+        id: user.id,
+        role: role || 'worker',
+        full_name: fullName,
+        phone,
+        city,
+        photo_url: photoUrl,
+        salary_expected: salary,
+        experience,
+        cuisines,
+        languages: selectedLangs,
+        work_cities: cities,
+      });
+
+      if (profileError) {
+        setSubmitError(profileError.message);
+        setSubmitting(false);
+        return;
+      }
+
+      // Save work history
+      const validEntries = expEntries.filter(e => e.title || e.workplace);
+      if (validEntries.length > 0) {
+        // Clear old entries first
+        await supabase.from('work_history').delete().eq('profile_id', user.id);
+
+        const { error: historyError } = await supabase.from('work_history').insert(
+          validEntries.map(e => ({
+            profile_id: user.id,
+            job_title: e.title,
+            workplace: e.workplace,
+            year_from: e.from,
+            year_to: e.to,
+          }))
+        );
+
+        if (historyError) {
+          setSubmitError(historyError.message);
+          setSubmitting(false);
+          return;
+        }
+      }
+
+      // Success — go to done screen
+      setStep(totalSteps + 1);
+    } catch {
+      setSubmitError('Something went wrong. Please try again.');
+    }
+    setSubmitting(false);
   }
 
   // ---------------------------------------------------------------------------
@@ -287,11 +377,11 @@ export default function CreateProfilePage() {
       <p className="step-desc">{t('s2_desc')}</p>
       <div className="field">
         <label>{t('label_name')}</label>
-        <input type="text" placeholder={t('placeholder_name')} />
+        <input type="text" placeholder={t('placeholder_name')} value={fullName} onChange={e => setFullName(e.target.value)} />
       </div>
       <div className="field">
         <label>{t('label_phone')}</label>
-        <input type="tel" placeholder={t('placeholder_phone')} />
+        <input type="tel" placeholder={t('placeholder_phone')} value={phone} onChange={e => setPhone(e.target.value)} />
         <div className="hint">{t('phone_hint')}</div>
       </div>
     </div>
@@ -348,7 +438,7 @@ export default function CreateProfilePage() {
       <p className="step-desc">{t('s4_desc')}</p>
       <div className="field">
         <label>{t('label_city')}</label>
-        <select>
+        <select value={city} onChange={e => setCity(e.target.value)}>
           <option value="">Select your city</option>
           {WORK_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
@@ -383,7 +473,7 @@ export default function CreateProfilePage() {
       <p className="step-desc">{t('s5_desc')}</p>
       <div className="field">
         <label>{t('label_experience')}</label>
-        <select>
+        <select value={experience} onChange={e => setExperience(e.target.value)}>
           <option value="">Select experience</option>
           {EXPERIENCE_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
         </select>
@@ -591,6 +681,12 @@ export default function CreateProfilePage() {
         {step > totalSteps && SuccessScreen}
       </div>
 
+      {submitError && (
+        <div style={{ maxWidth: 600, margin: '0 auto', padding: '0 24px' }}>
+          <div className="auth-error">{submitError}</div>
+        </div>
+      )}
+
       {/* Bottom Navigation Bar — hidden on success */}
       {step <= totalSteps && (
         <div className="bottom-bar">
@@ -602,8 +698,13 @@ export default function CreateProfilePage() {
             ) : (
               <span />
             )}
-            <button className="btn-next" onClick={nextStep} type="button">
-              {step === totalSteps ? t('btn_submit') : t('btn_next')}
+            <button
+              className="btn-next"
+              onClick={step === totalSteps ? submitProfile : nextStep}
+              type="button"
+              disabled={submitting}
+            >
+              {submitting ? 'Saving...' : step === totalSteps ? t('btn_submit') : t('btn_next')}
             </button>
           </div>
         </div>
