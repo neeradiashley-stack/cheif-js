@@ -1497,5 +1497,28 @@ body::after {
   transition: all 0.2s;
 }
 .btn-google:hover { border-color: var(--charcoal-light); background: var(--cream); }
+.auth-role-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  background: var(--ember-glow);
+  color: var(--ember);
+  margin-bottom: 12px;
+}
+.auth-switch {
+  background: none;
+  border: none;
+  color: var(--ember);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  padding: 0;
+}
+.auth-switch:hover { text-decoration: underline; }
 .dashboard-actions { margin-bottom: 12px; }
 @media (max-width: 640px) { .auth-role-select { grid-template-columns: 1fr; } .auth-card { padding: 28px 20px; } }
