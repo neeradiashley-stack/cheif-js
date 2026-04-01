@@ -50,11 +50,23 @@ export default function LoginPage() {
     </div>
   );
 
+  const heroBanner = (
+    <div className="auth-hero">
+      <img
+        src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80"
+        alt="Professional chef at work"
+      />
+      <div className="auth-hero-overlay" />
+    </div>
+  );
+
   // Step 1: Choose who you are
   if (!loginAs) {
     return (
       <div className="auth-page">
-        <div className="auth-card">
+        <div className="auth-card auth-card-with-hero">
+          {heroBanner}
+          <div className="auth-card-body">
           {logo}
           <div className="auth-header">
             <h1>Welcome Back</h1>
@@ -91,6 +103,7 @@ export default function LoginPage() {
           <div className="auth-footer">
             Don&apos;t have an account? <a href="/signup">Sign Up Free</a>
           </div>
+          </div>
         </div>
       </div>
     );
@@ -99,7 +112,9 @@ export default function LoginPage() {
   // Step 2: Login form
   return (
     <div className="auth-page">
-      <div className="auth-card">
+      <div className="auth-card auth-card-with-hero">
+        {heroBanner}
+        <div className="auth-card-body">
         {logo}
         <div className="auth-header">
           <div className="auth-role-badge">
@@ -153,6 +168,7 @@ export default function LoginPage() {
           </button>
           <span> &middot; </span>
           <span>No account? <a href="/signup">Sign Up Free</a></span>
+        </div>
         </div>
       </div>
     </div>

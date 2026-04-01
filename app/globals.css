@@ -1382,6 +1382,30 @@ body::after {
   padding: 40px 32px;
   box-shadow: var(--shadow-md);
 }
+.auth-card-with-hero {
+  padding: 0;
+  overflow: hidden;
+}
+.auth-card-with-hero .auth-card-body {
+  padding: 32px 32px 40px;
+}
+.auth-hero {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+}
+.auth-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.auth-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.3) 100%);
+}
 .auth-logo {
   text-align: center;
   font-family: var(--font-display);
