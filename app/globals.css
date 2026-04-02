@@ -1385,15 +1385,17 @@ body::after {
 .auth-card-with-hero {
   padding: 0;
   overflow: hidden;
+  position: relative;
 }
 .auth-card-with-hero .auth-card-body {
+  position: relative;
+  z-index: 2;
   padding: 32px 32px 40px;
 }
 .auth-hero {
-  position: relative;
-  width: 100%;
-  height: 160px;
-  overflow: hidden;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 .auth-hero img {
   width: 100%;
@@ -1404,7 +1406,8 @@ body::after {
 .auth-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.3) 100%);
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(2px);
 }
 .auth-logo {
   text-align: center;

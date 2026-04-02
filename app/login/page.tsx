@@ -53,8 +53,8 @@ export default function LoginPage() {
   const heroBanner = (
     <div className="auth-hero">
       <img
-        src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80"
-        alt="Professional chef at work"
+        src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=800&q=80"
+        alt="Professional chef"
       />
       <div className="auth-hero-overlay" />
     </div>
